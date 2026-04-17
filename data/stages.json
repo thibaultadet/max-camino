@@ -1,0 +1,137 @@
+[
+  {
+    "slug": "etape-1",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 1 - from Carcassonne to Montréal",
+    "date": "2026-06-01",
+    "km": 25,
+    "lat": 43.205554,
+    "lng": 2.361991,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254409/embed"
+  },
+  {
+    "slug": "etape-2",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 2 - from Montréal to Lignairolles",
+    "date": "2026-06-02",
+    "km": 26.8,
+    "lat": 43.197513,
+    "lng": 2.14535,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254410/embed"
+  },
+  {
+    "slug": "etape-3",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 3 - from Lignairolles to Teilhet",
+    "date": "2026-06-03",
+    "km": 26.8,
+    "lat": 43.109881,
+    "lng": 1.986966,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254411/embed"
+  },
+  {
+    "slug": "etape-4",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 4 - from Teilhet to Pamiers",
+    "date": "2026-06-04",
+    "km": 25.2,
+    "lat": 43.093367,
+    "lng": 1.778614,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254412/embed"
+  },
+  {
+    "slug": "etape-5",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 5 - from Pamiers to Barane",
+    "date": "2026-06-05",
+    "km": 32.8,
+    "lat": 43.124893,
+    "lng": 1.603356,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254413/embed"
+  },
+  {
+    "slug": "etape-6",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 6 - from Barane to Clermont",
+    "date": "2026-06-06",
+    "km": 23.6,
+    "lat": 43.070541,
+    "lng": 1.445994,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254414/embed"
+  },
+  {
+    "slug": "etape-7",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 7 - from Clermont to Moulis",
+    "date": "2026-06-07",
+    "km": 26.7,
+    "lat": 43.030601,
+    "lng": 1.296216,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254415/embed"
+  },
+  {
+    "slug": "etape-8",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 8 - from Moulis to Portet-d'Aspet",
+    "date": "2026-06-08",
+    "km": 29.3,
+    "lat": 42.953621,
+    "lng": 1.078265,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254417/embed"
+  },
+  {
+    "slug": "etape-9",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 9 - from Portet-d'Aspet to Juzet-d'Izaut",
+    "date": "2026-06-09",
+    "km": 17.3,
+    "lat": 42.939795,
+    "lng": 0.867052,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254418/embed"
+  },
+  {
+    "slug": "etape-10",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 10 - from Juzet-d'Izaut to Saint-Bertrand-de-Comminges",
+    "date": "2026-06-10",
+    "km": 27,
+    "lat": 42.978093,
+    "lng": 0.758807,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254420/embed"
+  },
+  {
+    "slug": "etape-11",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 11 - from Saint-Bertrand-de-Comminges to Montsérié",
+    "date": "2026-06-11",
+    "km": 20,
+    "lat": 43.027483,
+    "lng": 0.570896,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254421/embed"
+  },
+  {
+    "slug": "etape-12",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 12 - from Montsérié to Benqué-Molère",
+    "date": "2026-06-12",
+    "km": 26.6,
+    "lat": 43.051019,
+    "lng": 0.435671,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254422/embed"
+  },
+  {
+    "slug": "etape-13",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 13 - from Benqué-Molère to Gerde",
+    "date": "2026-06-13",
+    "km": 20.5,
+    "lat": 43.085933,
+    "lng": 0.280323,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254423/embed"
+  },
+  {
+    "slug": "etape-14",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 14 - from Gerde to Ourdis-Cotdoussan",
+    "date": "2026-06-14",
+    "km": 26,
+    "lat": 43.05629,
+    "lng": 0.165824,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254426/embed"
+  },
+  {
+    "slug": "etape-15",
+    "title": "Compostelle - VDMB Secteur 8 - Voie du Piémont - Day 15 - from Ourdis-Cotdoussan to Lourdes",
+    "date": "2026-06-15",
+    "km": 14.9,
+    "lat": 43.04864,
+    "lng": 0.02359,
+    "komoot_embed_url": "https://www.komoot.com/tour/2651254428/embed"
+  }
+]
