@@ -18,12 +18,13 @@ html {
   --border: #e5e5e2;
   --accent: #0c0c0c;
   --accent-muted: #525252;
-  --trail: #c2410c;
-  --trail-soft: #faf6f3;
   --map-route: #1a1a1a;
   /* Disque « gare » — vert forêt proche du logo (ajuste si besoin) */
   --map-station-fill: #2f7d57;
   --map-station-stroke: #1a5c3d;
+  /* Accent UI = même vert que le marqueur gare */
+  --trail: var(--map-station-fill);
+  --trail-soft: #eef8f2;
 }
 
 body {

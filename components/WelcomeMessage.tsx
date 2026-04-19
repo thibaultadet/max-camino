@@ -1,7 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import ScrollToJoinButton from "@/components/ScrollToJoinButton";
+import WelcomeLogoLink from "@/components/WelcomeLogoLink";
 
 type WelcomeMessageProps = {
   /** Contenu entre le texte d’accueil et les règles (ex. carrousel photos). */
@@ -13,20 +12,7 @@ export default function WelcomeMessage({ midSection }: WelcomeMessageProps) {
     <section className="w-full" aria-labelledby="welcome-heading">
       {/* Logo + titre + premier bloc sur la même ligne (à partir de md) */}
       <div className="flex flex-col gap-8 md:flex-row md:items-stretch md:gap-10 lg:gap-14 xl:gap-16">
-        <Link
-          href="/"
-          className="relative mx-auto block min-h-48 w-full max-w-md flex-none sm:min-h-52 md:mx-0 md:min-h-0 md:max-w-none md:flex-1 md:basis-0 md:self-stretch md:min-w-0"
-          aria-label="Accueil"
-        >
-          <Image
-            src="/logo.png"
-            alt=""
-            fill
-            className="object-contain object-center"
-            sizes="(max-width: 768px) min(100vw, 28rem), 45vw"
-            priority
-          />
-        </Link>
+        <WelcomeLogoLink />
 
         <div className="min-w-0 flex-1 space-y-6 text-[15px] leading-relaxed text-neutral-600 md:basis-0 md:text-base">
           <header className="text-left">

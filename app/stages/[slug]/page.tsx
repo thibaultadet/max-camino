@@ -23,17 +23,17 @@ export default async function StagePage({ params }: { params: Promise<{ slug: st
     <main className="mx-auto max-w-3xl px-4 py-10 md:px-8">
       <Link
         href="/"
-        className="mb-8 inline-block text-sm font-medium text-[#c2410c] underline-offset-4 hover:underline"
+        className="mb-8 inline-block text-sm font-medium text-[var(--trail)] underline-offset-4 hover:underline"
       >
         ← Toutes les étapes
       </Link>
 
       <div className="mb-8 flex items-start gap-5">
-        <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-sm border border-neutral-200 bg-orange-50 text-center leading-tight">
-          <span className="text-xs font-semibold uppercase tracking-wide text-[#c2410c]">
+        <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-sm border border-neutral-200 bg-[var(--trail-soft)] text-center leading-tight">
+          <span className="text-xs font-semibold uppercase tracking-wide text-[var(--trail)]">
             {dateObj.toLocaleDateString("fr-FR", { month: "short" })}
           </span>
-          <span className="text-2xl font-bold text-[#9a3412]">{dateObj.getDate()}</span>
+          <span className="text-2xl font-bold text-[var(--map-station-stroke)]">{dateObj.getDate()}</span>
           <span className="text-[10px] text-neutral-400">{dateObj.getFullYear()}</span>
         </div>
         <div>
