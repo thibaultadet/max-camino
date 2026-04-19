@@ -20,45 +20,51 @@ export default async function StagePage({ params }: { params: Promise<{ slug: st
   const dateObj = new Date(stage.date);
 
   return (
-    <main className="px-4 md:px-10 py-10">
-      <Link href="/" className="text-sm text-[#e07b00] hover:underline mb-8 inline-block">
+    <main className="mx-auto max-w-3xl px-4 py-10 md:px-8">
+      <Link
+        href="/"
+        className="mb-8 inline-block text-sm font-medium text-[#c2410c] underline-offset-4 hover:underline"
+      >
         ← Toutes les étapes
       </Link>
 
-      <div className="flex items-start gap-5 mb-8">
-        <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-amber-100 flex flex-col items-center justify-center text-center leading-tight">
-          <span className="text-xs font-bold text-[#e07b00] uppercase tracking-wide">
+      <div className="mb-8 flex items-start gap-5">
+        <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-sm border border-neutral-200 bg-orange-50 text-center leading-tight">
+          <span className="text-xs font-semibold uppercase tracking-wide text-[#c2410c]">
             {dateObj.toLocaleDateString("fr-FR", { month: "short" })}
           </span>
-          <span className="text-2xl font-bold text-[#c45e00]">{dateObj.getDate()}</span>
-          <span className="text-[10px] text-gray-400">{dateObj.getFullYear()}</span>
+          <span className="text-2xl font-bold text-[#9a3412]">{dateObj.getDate()}</span>
+          <span className="text-[10px] text-neutral-400">{dateObj.getFullYear()}</span>
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-[#1a1a1a] leading-tight">{stage.title}</h1>
-          <p className="text-gray-500 mt-1">{stage.km} km</p>
+          <h1 className="text-2xl font-bold leading-tight text-neutral-900">{stage.title}</h1>
+          <p className="mt-1 text-neutral-500">{stage.km} km</p>
         </div>
       </div>
 
-      <div className="mb-10 rounded-xl overflow-hidden border border-amber-100 shadow-sm">
+      <div className="mb-10 overflow-hidden rounded-sm border border-neutral-200 shadow-sm">
         <iframe src={stage.komoot_embed_url} width="100%" height="580" allowFullScreen />
       </div>
 
-      <div className="border border-amber-200 rounded-xl p-6 bg-amber-50 space-y-4">
+      <div className="space-y-4 rounded-sm border border-neutral-200 bg-[var(--background-subtle)] p-6">
         <div>
-          <h2 className="text-lg font-semibold text-[#1a1a1a]">Marcher avec Max</h2>
-          <p className="text-sm text-gray-500">Inscris ton prénom pour rejoindre cette étape.</p>
+          <h2 className="text-lg font-semibold text-neutral-900">Marcher avec Max</h2>
+          <p className="text-sm text-neutral-500">Inscris ton prénom pour rejoindre cette étape.</p>
         </div>
 
         <RegisterForm stages={slug} />
 
         {registrations.length > 0 && (
-          <div className="pt-2 border-t border-amber-200">
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">
+          <div className="border-t border-neutral-200 pt-4">
+            <p className="mb-2 text-xs uppercase tracking-wide text-neutral-400">
               {registrations.length} inscrit{registrations.length > 1 ? "s" : ""}
             </p>
             <div className="flex flex-wrap gap-2">
               {registrations.map((r) => (
-                <span key={r.id} className="bg-white border border-amber-200 text-sm text-[#1a1a1a] px-3 py-1 rounded-full">
+                <span
+                  key={r.id}
+                  className="rounded-full border border-neutral-200 bg-white px-3 py-1 text-sm text-neutral-900"
+                >
                   {r.name}
                 </span>
               ))}

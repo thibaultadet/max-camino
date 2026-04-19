@@ -9,6 +9,53 @@ export type Stage = {
   has_station?: boolean;
 };
 
+/** Parse une date d’étape (ISO ou JJ/MM/AAAA) pour un tri fiable — pas un simple localeCompare. */
+export function parseStageDateMs(dateStr: string): number {
+  const t = dateStr.trim();
+  const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(t);
+  if (iso) return Date.UTC(+iso[1], +iso[2] - 1, +iso[3]);
+  const dmy = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/.exec(t);
+  if (dmy) return Date.UTC(+dmy[3], +dmy[2] - 1, +dmy[1]);
+  const ms = Date.parse(t);
+  return Number.isNaN(ms) ? 0 : ms;
+}
+
+function parseDayNumberFromTitle(title: string): number | null {
+  const m = /\bDay\s+(\d+)\b/i.exec(title);
+  return m ? parseInt(m[1], 10) : null;
+}
+
+function parseEtapeIndexFromSlug(slug: string): number | null {
+  const m = /etape-(\d+)/i.exec(slug.trim());
+  return m ? parseInt(m[1], 10) : null;
+}
+
+/**
+ * Ordre d’itinéraire pour carte / liste : évite les tracés en « toile d’araignée »
+ * quand les dates Airtable ne trient pas bien (formats ambigus) alors que les slugs
+ * `etape-N` suivent le parcours réel.
+ */
+export function orderStagesForItinerary(stages: Stage[]): Stage[] {
+  const copy = [...stages];
+  if (copy.length <= 1) return copy;
+
+  const etapeIndices = copy.map((s) => parseEtapeIndexFromSlug(s.slug));
+  const allHaveEtape = etapeIndices.every((x) => x != null);
+  const uniqueEtapes = new Set(etapeIndices.filter((x) => x != null)).size;
+  if (allHaveEtape && uniqueEtapes === copy.length) {
+    return copy.sort((a, b) => parseEtapeIndexFromSlug(a.slug)! - parseEtapeIndexFromSlug(b.slug)!);
+  }
+
+  return copy.sort((a, b) => {
+    const c = parseStageDateMs(a.date) - parseStageDateMs(b.date);
+    if (c !== 0) return c;
+    const da = parseDayNumberFromTitle(a.title);
+    const db = parseDayNumberFromTitle(b.title);
+    if (da != null && db != null && da !== db) return da - db;
+    return a.slug.localeCompare(b.slug);
+  });
+}
+
 export type Registration = {
   id: string;
   name: string;
@@ -41,9 +88,7 @@ export async function getStages(): Promise<Stage[]> {
     offset = data.offset;
   } while (offset);
 
-  return records
-    .filter((s) => s.slug)
-    .sort((a, b) => a.date.localeCompare(b.date));
+  return orderStagesForItinerary(records.filter((s) => s.slug));
 }
 
 export async function getRegistrationsForStage(slug: string): Promise<Registration[]> {

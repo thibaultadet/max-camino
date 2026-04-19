@@ -3,17 +3,13 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import type { Stage } from "@/lib/airtable";
+import { shortTitle } from "@/lib/shortStageTitle";
 import { register } from "@/app/actions";
 
 type Props = {
   stages: Stage[];
   registrationsByStage: Record<string, string[]>;
 };
-
-export function shortTitle(title: string): string {
-  const match = title.match(/from (.+)$/i);
-  return match ? match[1].replace(" to ", " → ") : title;
-}
 
 function getSector(title: string): string {
   const match = title.match(/Secteur\s+(\d+)\s+-\s+([^-]+)/);
@@ -41,7 +37,8 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
   function toggle(slug: string) {
     setSelected((prev) => {
       const next = new Set(prev);
-      next.has(slug) ? next.delete(slug) : next.add(slug);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
       return next;
     });
   }
@@ -60,14 +57,14 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
 
   return (
     <>
-      <div className="space-y-10">
+      <div className="divide-y divide-[var(--border)]">
         {groups.map(({ sector, stages: groupStages }) => (
-          <div key={sector}>
-            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">
+          <div key={sector} className="py-10 first:pt-8 last:pb-8">
+            <h2 className="mb-6 px-6 font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.28em] text-neutral-500 md:px-8">
               {sector}
             </h2>
-            <ul className="space-y-1">
-              {groupStages.map((stage, index) => {
+            <ul className="divide-y divide-[var(--border)]">
+              {groupStages.map((stage) => {
                 const checked = selected.has(stage.slug);
                 const names = registrationsByStage[stage.slug] ?? [];
                 const dateObj = new Date(stage.date);
@@ -81,43 +78,50 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
                     key={stage.slug}
                     onMouseEnter={() => setHoveredSlug(stage.slug)}
                     onMouseLeave={() => setHoveredSlug(null)}
-                    className={`relative group rounded-xl transition-all duration-150 ${
-                      checked ? "bg-amber-50 ring-1 ring-amber-200" : "hover:bg-gray-50"
+                    className={`relative group transition-colors duration-150 ${
+                      checked
+                        ? "bg-[var(--trail-soft)]"
+                        : "hover:bg-[var(--background-subtle)]"
                     }`}
                   >
-                    <div className="flex items-center gap-4 px-4 py-4">
+                    <div className="flex items-center gap-4 px-5 py-5 md:gap-6 md:px-8">
 
                       {/* Checkbox */}
                       <input
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggle(stage.slug)}
-                        className="w-5 h-5 accent-[#e07b00] cursor-pointer flex-shrink-0"
+                        className="h-[18px] w-[18px] shrink-0 cursor-pointer accent-[var(--trail)]"
+                        aria-label={`Sélectionner ${shortTitle(stage.title)}`}
                       />
 
                       {/* Date */}
-                      <div className="flex-shrink-0 w-12 text-center">
-                        <div className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest leading-none">
+                      <div className="w-14 shrink-0 text-center md:w-16">
+                        <div className="font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase leading-none tracking-[0.2em] text-neutral-400">
                           {month}
                         </div>
-                        <div className="text-2xl font-bold text-[#c45e00] leading-tight">{day}</div>
+                        <div className="mt-1 font-[family-name:var(--font-display)] text-2xl font-semibold leading-none tracking-[0.02em] text-[var(--foreground)]">
+                          {day}
+                        </div>
                       </div>
 
                       {/* Separator */}
-                      <div className="w-px h-10 bg-amber-100 flex-shrink-0" />
+                      <div className="h-12 w-px shrink-0 bg-[var(--border)]" />
 
                       {/* Content */}
-                      <Link href={`/stages/${stage.slug}`} className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-medium text-gray-300">#{globalIndex + 1}</span>
-                          <p className="text-base font-semibold text-[#1a1a1a] truncate group-hover:text-[#e07b00] transition-colors">
+                      <Link href={`/stages/${stage.slug}`} className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                          <span className="font-[family-name:var(--font-display)] text-[10px] font-medium tabular-nums text-neutral-400">
+                            {String(globalIndex + 1).padStart(2, "0")}
+                          </span>
+                          <p className="min-w-0 flex-1 truncate text-[15px] font-semibold leading-snug text-neutral-900 transition-colors group-hover:text-[var(--trail)] md:text-base">
                             {shortTitle(stage.title)}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2 mt-1 flex-wrap">
-                          <span className="text-sm text-gray-400">{stage.km} km</span>
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                          <span className="text-xs text-neutral-500">{stage.km} km</span>
                           {names.length > 0 && (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-[#c45e00] bg-amber-50 px-2 py-0.5 rounded-full">
+                            <span className="inline-flex items-center border border-[var(--border)] bg-white px-2 py-0.5 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.14em] text-neutral-600">
                               {names.length} inscrit{names.length > 1 ? "s" : ""}
                             </span>
                           )}
@@ -126,19 +130,21 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
 
                       {/* Gare */}
                       {showStation && (
-                        <span className="flex-shrink-0 text-sm font-semibold text-gray-600 bg-gray-100 border border-gray-200 px-3 py-1 rounded-full whitespace-nowrap">
-                          🚆 Gare
+                        <span className="hidden shrink-0 whitespace-nowrap border border-[var(--border)] bg-[var(--background-subtle)] px-2.5 py-1 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.16em] text-neutral-600 sm:inline-block">
+                          Gare
                         </span>
                       )}
                     </div>
 
                     {/* Tooltip inscrits */}
                     {names.length > 0 && hoveredSlug === stage.slug && (
-                      <div className="absolute right-12 top-1/2 -translate-y-1/2 z-10 bg-white border border-amber-100 rounded-xl shadow-xl px-4 py-3 min-w-[140px]">
-                        <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-2">Inscrits</p>
-                        <ul className="space-y-1">
+                      <div className="absolute right-6 top-1/2 z-10 min-w-[160px] -translate-y-1/2 border border-[var(--border)] bg-white px-4 py-3 shadow-lg md:right-10">
+                        <p className="mb-2 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
+                          Inscrits
+                        </p>
+                        <ul className="space-y-1.5">
                           {names.map((n, i) => (
-                            <li key={`${stage.slug}-${i}`} className="text-sm font-medium text-[#1a1a1a]">{n}</li>
+                            <li key={`${stage.slug}-${i}`} className="text-sm font-medium text-neutral-900">{n}</li>
                           ))}
                         </ul>
                       </div>
@@ -152,22 +158,25 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
       </div>
 
       {selected.size > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
-          <div className="bg-white border border-amber-200 rounded-2xl shadow-2xl p-4">
+        <div className="fixed bottom-6 left-1/2 z-50 w-full max-w-lg -translate-x-1/2 px-4">
+          <div className="border border-[var(--border)] bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
             {done ? (
-              <p className="text-center text-[#e07b00] font-semibold py-2">
+              <p className="py-1 text-center text-sm font-medium text-neutral-900">
                 C&apos;est noté ! Max te contactera. 🎉
               </p>
             ) : (
               <>
-                <p className="text-base font-semibold text-[#1a1a1a] mb-3">
+                <p className="mb-4 font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-500">
+                  Inscription
+                </p>
+                <p className="mb-4 text-base font-semibold text-neutral-900">
                   {selected.size} étape{selected.size > 1 ? "s" : ""} sélectionnée{selected.size > 1 ? "s" : ""}
                 </p>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                  <label htmlFor="name-list" className="text-sm font-medium text-gray-600">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                  <label htmlFor="name-list" className="text-xs font-medium uppercase tracking-wide text-neutral-600">
                     Prénom et nom
                   </label>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
                     <input
                       id="name-list"
                       type="text"
@@ -176,12 +185,12 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
                       onChange={(e) => setName(e.target.value)}
                       required
                       minLength={2}
-                      className="flex-1 border border-amber-200 rounded-lg px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-[#e07b00]"
+                      className="min-h-[48px] flex-1 border border-[var(--border)] bg-[var(--background-subtle)] px-4 py-3 text-base text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-neutral-900"
                     />
                     <button
                       type="submit"
                       disabled={isPending}
-                      className="bg-[#e07b00] hover:bg-[#c45e00] disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-lg text-base transition"
+                      className="min-h-[48px] shrink-0 border border-[var(--foreground)] bg-[var(--foreground)] px-8 py-3 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-neutral-800 disabled:opacity-50"
                     >
                       {isPending ? "…" : "Je viens !"}
                     </button>

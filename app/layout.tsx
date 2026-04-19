@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, Oswald } from "next/font/google";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const display = Oswald({
   subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sans = DM_Sans({
   subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Le Chemin de Max",
+  title: "Voie du Mont Blanc",
   description: "Suivez Max sur le Chemin de Compostelle et venez marcher avec lui.",
 };
 
@@ -26,9 +28,11 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${display.variable} ${sans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#fafaf8]">{children}</body>
+      <body className="min-h-full flex flex-col bg-[var(--background)] font-[family-name:var(--font-sans)] text-neutral-900">
+        {children}
+      </body>
     </html>
   );
 }
