@@ -1,4 +1,5 @@
 export type Stage = {
+  _id: string;
   slug: string;
   title: string;
   date: string;
@@ -86,7 +87,7 @@ export async function getStages(): Promise<Stage[]> {
     const res = await fetch(url, { headers: airtableHeaders(), cache: "no-store" });
     if (!res.ok) break;
     const data = await res.json();
-    records.push(...(data.records ?? []).map((r: { fields: Stage }) => r.fields));
+    records.push(...(data.records ?? []).map((r: { id: string; fields: Omit<Stage, "_id"> }) => ({ _id: r.id, ...r.fields })));
     offset = data.offset;
   } while (offset);
 
@@ -96,7 +97,11 @@ export async function getStages(): Promise<Stage[]> {
 export async function getRegistrationsForStage(slug: string): Promise<Registration[]> {
   if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) return [];
 
-  const formula = encodeURIComponent(`{stages}="${slug}"`);
+  const stages = await getStages();
+  const stage = stages.find((s) => s.slug === slug);
+  if (!stage) return [];
+
+  const formula = encodeURIComponent(`FIND("${stage._id}", ARRAYJOIN({stages}))`);
   const url = `${baseUrl("Registrations")}?filterByFormula=${formula}&fields[]=name`;
   const res = await fetch(url, {
     headers: airtableHeaders(),
@@ -114,6 +119,9 @@ export async function getRegistrationsForStage(slug: string): Promise<Registrati
 export async function getAllRegistrationsByStage(): Promise<Record<string, string[]>> {
   if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) return {};
 
+  const stages = await getStages();
+  const idToSlug = Object.fromEntries(stages.map((s) => [s._id, s.slug]));
+
   const result: Record<string, string[]> = {};
   let offset: string | undefined;
 
@@ -124,10 +132,13 @@ export async function getAllRegistrationsByStage(): Promise<Record<string, strin
     const data = await res.json();
     for (const r of data.records ?? []) {
       const name: string = r.fields.name ?? "Anonyme";
-      const slug: string = r.fields.stages ?? "";
-      if (!slug) continue;
-      if (!result[slug]) result[slug] = [];
-      result[slug].push(name);
+      const recordIds: string[] = r.fields.stages ?? [];
+      for (const recordId of recordIds) {
+        const slug = idToSlug[recordId];
+        if (!slug) continue;
+        if (!result[slug]) result[slug] = [];
+        result[slug].push(name);
+      }
     }
     offset = data.offset;
   } while (offset);
@@ -135,14 +146,14 @@ export async function getAllRegistrationsByStage(): Promise<Record<string, strin
   return result;
 }
 
-export async function createRegistration(name: string, stages: string): Promise<void> {
+export async function createRegistration(name: string, stageRecordId: string): Promise<void> {
   if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY)
     throw new Error("Airtable non configuré");
 
   const res = await fetch(baseUrl("Registrations"), {
     method: "POST",
     headers: airtableHeaders(),
-    body: JSON.stringify({ fields: { name, stages } }),
+    body: JSON.stringify({ fields: { name, stages: [stageRecordId] } }),
   });
 
   if (!res.ok) {
