@@ -19,7 +19,6 @@ export default function PrayerIntentionForm() {
         await submitPrayerIntention(name, intention);
         setDone(true);
         setName("");
-        setEmail("");
         setIntention("");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Une erreur est survenue");

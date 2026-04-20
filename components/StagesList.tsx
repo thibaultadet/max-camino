@@ -35,6 +35,7 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
   const [isPending, startTransition] = useTransition();
 
   function toggle(slug: string) {
+    if (done) setDone(false);
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(slug)) next.delete(slug);
@@ -168,12 +169,12 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
         ))}
       </div>
 
-      {selected.size > 0 && (
+      {(selected.size > 0 || done) && (
         <div className="fixed bottom-6 left-1/2 z-50 w-full max-w-lg -translate-x-1/2 px-4">
           <div className="relative border border-[var(--border)] bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
             <button
               type="button"
-              onClick={() => setSelected(new Set())}
+              onClick={() => { setSelected(new Set()); setDone(false); }}
               aria-label="Fermer"
               className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center text-neutral-400 transition hover:text-neutral-900"
             >
