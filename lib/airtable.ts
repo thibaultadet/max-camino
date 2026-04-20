@@ -8,6 +8,7 @@ export type Stage = {
   lng: number;
   komoot_embed_url: string;
   has_station?: boolean;
+  registrations_closed?: boolean;
 };
 
 /** Parse une date d’étape (ISO ou JJ/MM/AAAA) pour un tri fiable — pas un simple localeCompare. */
@@ -76,7 +77,7 @@ function baseUrl(table: string) {
 export async function getStages(): Promise<Stage[]> {
   if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) return [];
 
-  const fields = "fields[]=slug&fields[]=title&fields[]=date&fields[]=km&fields[]=denivele&fields[]=lat&fields[]=lng&fields[]=komoot_embed_url&fields[]=has_station";
+  const fields = "fields[]=slug&fields[]=title&fields[]=date&fields[]=km&fields[]=denivele&fields[]=lat&fields[]=lng&fields[]=komoot_embed_url&fields[]=has_station&fields[]=registrations_closed";
   const records: Stage[] = [];
   let offset: string | undefined;
 

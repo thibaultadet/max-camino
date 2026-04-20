@@ -73,7 +73,7 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
   return (
     <>
       <div className="p-6 md:p-8">
-        <div className="mb-8 flex items-center justify-between gap-4 border-b border-[var(--border)] pb-6">
+        <div className="flex items-center justify-between gap-4 pb-6">
           <button
             type="button"
             onClick={prevMonth}
@@ -116,6 +116,7 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
             const names = stage ? (registrationsByStage[stage.slug] ?? []) : [];
             const isToday = new Date().toISOString().slice(0, 10) === dateStr;
             const checked = stage ? selected.has(stage.slug) : false;
+            const closed = stage?.registrations_closed ?? false;
 
             if (!stage) {
               return (
@@ -139,21 +140,23 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
                 tabIndex={0}
                 aria-pressed={checked}
                 aria-label={`${checked ? "Désélectionner" : "Sélectionner"} ${shortTitle(stage.title)}, le ${dateStr}`}
-                onClick={() => toggle(stage.slug)}
+                onClick={() => !closed && toggle(stage.slug)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
+                  if (!closed && (e.key === "Enter" || e.key === " ")) {
                     e.preventDefault();
                     toggle(stage.slug);
                   }
                 }}
                 onMouseEnter={() => setHoveredSlug(stage.slug)}
                 onMouseLeave={() => setHoveredSlug(null)}
-                className={`relative flex min-h-[140px] cursor-pointer flex-col bg-white p-2 text-left transition-colors md:min-h-[160px] md:p-3 ${
-                  checked
-                    ? "bg-[var(--trail-soft)] ring-2 ring-inset ring-[var(--trail)]"
-                    : stage.has_station
-                      ? "hover:bg-[color-mix(in_srgb,var(--trail-soft)_75%,white)]"
-                      : "hover:bg-[var(--background-subtle)]"
+                className={`relative flex min-h-[140px] flex-col bg-white p-2 text-left transition-colors md:min-h-[160px] md:p-3 ${
+                  closed
+                    ? "cursor-not-allowed opacity-60"
+                    : checked
+                      ? "cursor-pointer bg-[var(--trail-soft)] ring-2 ring-inset ring-[var(--trail)]"
+                      : stage.has_station
+                        ? "cursor-pointer hover:bg-[color-mix(in_srgb,var(--trail-soft)_75%,white)]"
+                        : "cursor-pointer hover:bg-[var(--background-subtle)]"
                 } ${isToday && !checked ? "ring-2 ring-inset ring-neutral-900/20" : ""}`}
               >
                 <div className="flex items-start justify-between gap-1">
@@ -181,7 +184,11 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
                   {stage.has_station && (
                     <span className="text-2xl leading-none" title="Étape avec gare">🚉</span>
                   )}
-                  {names.length > 0 && (
+                  {closed ? (
+                    <span className="inline-flex items-center border border-neutral-400 px-1.5 py-0.5 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
+                      Complet
+                    </span>
+                  ) : names.length > 0 && (
                     <span className="inline-flex items-center border border-[var(--trail)] px-1.5 py-0.5 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.14em] text-[var(--trail)]">
                       {names.length} inscrit{names.length > 1 ? "s" : ""}
                     </span>

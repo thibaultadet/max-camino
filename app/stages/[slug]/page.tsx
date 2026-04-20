@@ -38,7 +38,9 @@ export default async function StagePage({ params }: { params: Promise<{ slug: st
         </div>
         <div>
           <h1 className="text-2xl font-bold leading-tight text-neutral-900">{stage.title}</h1>
-          <p className="mt-1 text-neutral-500">{stage.km} km</p>
+          <p className="mt-1 text-neutral-500">
+            {stage.km} km{stage.denivele != null && <> · ↑ {stage.denivele} m</>}
+          </p>
         </div>
       </div>
 
@@ -52,7 +54,7 @@ export default async function StagePage({ params }: { params: Promise<{ slug: st
           <p className="text-sm text-neutral-500">Inscris ton prénom pour rejoindre cette étape.</p>
         </div>
 
-        <RegisterForm stages={slug} />
+        <RegisterForm stages={slug} closed={stage.registrations_closed} />
 
         {registrations.length > 0 && (
           <div className="border-t border-neutral-200 pt-4">

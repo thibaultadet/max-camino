@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { register } from "@/app/actions";
 
-export default function RegisterForm({ stages }: { stages: string }) {
+export default function RegisterForm({ stages, closed }: { stages: string; closed?: boolean }) {
   const [name, setName] = useState("");
   const [done, setDone] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -15,6 +15,14 @@ export default function RegisterForm({ stages }: { stages: string }) {
       setDone(true);
       setName("");
     });
+  }
+
+  if (closed) {
+    return (
+      <p className="py-3 text-sm font-semibold text-neutral-500">
+        Les inscriptions pour cette étape sont fermées.
+      </p>
+    );
   }
 
   if (done) {

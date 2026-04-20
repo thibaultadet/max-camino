@@ -66,6 +66,7 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
             <ul className="divide-y divide-[var(--border)]">
               {groupStages.map((stage) => {
                 const checked = selected.has(stage.slug);
+                const closed = stage.registrations_closed ?? false;
                 const names = registrationsByStage[stage.slug] ?? [];
                 const dateObj = new Date(stage.date);
                 const day = dateObj.getDate();
@@ -79,9 +80,11 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
                     onMouseEnter={() => setHoveredSlug(stage.slug)}
                     onMouseLeave={() => setHoveredSlug(null)}
                     className={`relative group transition-colors duration-150 ${
-                      checked
-                        ? "bg-[var(--trail-soft)]"
-                        : "hover:bg-[var(--background-subtle)]"
+                      closed
+                        ? "opacity-60"
+                        : checked
+                          ? "bg-[var(--trail-soft)]"
+                          : "hover:bg-[var(--background-subtle)]"
                     }`}
                   >
                     <div className="flex items-center gap-4 px-5 py-5 md:gap-6 md:px-8">
@@ -90,8 +93,9 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
                       <input
                         type="checkbox"
                         checked={checked}
-                        onChange={() => toggle(stage.slug)}
-                        className="h-[18px] w-[18px] shrink-0 cursor-pointer accent-[var(--trail)]"
+                        disabled={closed}
+                        onChange={() => !closed && toggle(stage.slug)}
+                        className="h-[18px] w-[18px] shrink-0 cursor-pointer accent-[var(--trail)] disabled:cursor-not-allowed"
                         aria-label={`Sélectionner ${shortTitle(stage.title)}`}
                       />
 
@@ -123,7 +127,11 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
                           {stage.denivele != null && (
                             <span className="text-xs text-neutral-500">↑ {stage.denivele} m</span>
                           )}
-                          {names.length > 0 && (
+                          {closed ? (
+                            <span className="inline-flex items-center border border-neutral-400 px-2 py-0.5 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
+                              Complet
+                            </span>
+                          ) : names.length > 0 && (
                             <span className="inline-flex items-center border border-[var(--trail)] px-2 py-0.5 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.14em] text-[var(--trail)]">
                               {names.length} inscrit{names.length > 1 ? "s" : ""}
                             </span>
