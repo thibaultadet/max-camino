@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 /** Durée de l’animation `public/animated-logo.gif` (lecture unique, ffprobe format=duration). */
 const ANIMATED_LOGO_DURATION_MS = 5_920;
@@ -13,17 +13,21 @@ export default function WelcomeLogoLink() {
   const animationDoneRef = useRef(false);
   const [animationDone, setAnimationDone] = useState(false);
   const [logoReady, setLogoReady] = useState(false);
-  const [reduceMotion, setReduceMotion] = useState(false);
+  const reduceMotion = useSyncExternalStore(
+    (onChange) => {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mq.addEventListener("change", onChange);
+      return () => mq.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false
+  );
   const [gifLoaded, setGifLoaded] = useState(false);
 
   const markAnimationDone = useCallback(() => {
     if (animationDoneRef.current) return;
     animationDoneRef.current = true;
     setAnimationDone(true);
-  }, []);
-
-  useEffect(() => {
-    setReduceMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
 
   useEffect(() => {

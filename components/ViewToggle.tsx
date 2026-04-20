@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import type { Stage } from "@/lib/airtable";
 import StagesList from "./StagesList";
 import StagesCalendar from "./StagesCalendar";
@@ -8,18 +8,25 @@ import StagesCalendar from "./StagesCalendar";
 /** Aligné sur le breakpoint Tailwind `md` (desktop). */
 const MD_MIN_WIDTH_PX = 768;
 
+function subscribeMq(onChange: () => void) {
+  const mq = window.matchMedia(`(min-width: ${MD_MIN_WIDTH_PX}px)`);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+
 type Props = {
   stages: Stage[];
   registrationsByStage: Record<string, string[]>;
 };
 
 export default function ViewToggle({ stages, registrationsByStage }: Props) {
-  const [view, setView] = useState<"list" | "calendar">("list");
-
-  useLayoutEffect(() => {
-    const mq = window.matchMedia(`(min-width: ${MD_MIN_WIDTH_PX}px)`);
-    setView(mq.matches ? "calendar" : "list");
-  }, []);
+  const isWide = useSyncExternalStore(
+    subscribeMq,
+    () => window.matchMedia(`(min-width: ${MD_MIN_WIDTH_PX}px)`).matches,
+    () => false
+  );
+  const [userOverride, setUserOverride] = useState<"list" | "calendar" | null>(null);
+  const view = userOverride ?? (isWide ? "calendar" : "list");
 
   return (
     <div>
@@ -38,7 +45,7 @@ export default function ViewToggle({ stages, registrationsByStage }: Props) {
             type="button"
             role="tab"
             aria-selected={view === "list"}
-            onClick={() => setView("list")}
+            onClick={() => setUserOverride("list")}
             className={`flex-1 px-5 py-3 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors sm:flex-none sm:min-w-[8rem] ${
               view === "list"
                 ? "bg-[var(--foreground)] text-white"
@@ -51,7 +58,7 @@ export default function ViewToggle({ stages, registrationsByStage }: Props) {
             type="button"
             role="tab"
             aria-selected={view === "calendar"}
-            onClick={() => setView("calendar")}
+            onClick={() => setUserOverride("calendar")}
             className={`flex-1 border-l border-[var(--border)] px-5 py-3 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors sm:flex-none sm:min-w-[8rem] ${
               view === "calendar"
                 ? "bg-[var(--foreground)] text-white"
