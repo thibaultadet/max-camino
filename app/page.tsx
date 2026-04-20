@@ -31,7 +31,7 @@ export default async function Home() {
         }
       />
 
-      <div id="rejoindre-chemin" className="scroll-mt-6 md:scroll-mt-8">
+      <div>
         <section className="mt-16 md:mt-24" aria-labelledby="map-title">
           <SectionHeading
             eyebrow="Parcours"
@@ -44,7 +44,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="mt-16 md:mt-24" aria-labelledby="stages-title">
+        <section id="rejoindre-chemin" className="mt-16 scroll-mt-6 md:mt-24 md:scroll-mt-8" aria-labelledby="stages-title">
           <SectionHeading
             eyebrow="Rejoindre Max"
             title="Étapes et inscriptions"

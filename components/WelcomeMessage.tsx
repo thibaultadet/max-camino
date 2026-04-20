@@ -114,6 +114,9 @@ export default function WelcomeMessage({ midSection, stats }: WelcomeMessageProp
           <li>
             C’est pas impossible que je vous demande de me ramener des choses si je sais que vous venez ☺️
           </li>
+          <li>
+            C’est une aventure en autonomie : cela veut dire qu’on n’aura pas toujours de quoi se ravitailler ! Prévois bien cela niveau nourriture et eau !
+          </li>
         </ul>
 
         <ScrollToJoinButton />

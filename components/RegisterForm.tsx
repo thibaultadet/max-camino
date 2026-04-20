@@ -28,7 +28,7 @@ export default function RegisterForm({ stages, closed }: { stages: string; close
   if (done) {
     return (
       <p className="py-3 font-semibold text-neutral-900">
-        C&apos;est noté ! Max te contactera pour confirmer. 🎉
+        Parfait, on se voit sur les chemins ! 🎉
       </p>
     );
   }
