@@ -107,7 +107,7 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
           {cells.map((day, i) => {
             if (!day) {
               return (
-                <div key={i} className="min-h-[108px] bg-[var(--background-subtle)]/60 md:min-h-[120px]" />
+                <div key={i} className="min-h-[140px] bg-[var(--background-subtle)]/60 md:min-h-[160px]" />
               );
             }
 
@@ -121,7 +121,7 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
               return (
                 <div
                   key={i}
-                  className={`relative flex min-h-[108px] flex-col bg-white p-2 md:min-h-[120px] md:p-3 ${
+                  className={`relative flex min-h-[140px] flex-col bg-white p-2 md:min-h-[160px] md:p-3 ${
                     isToday ? "ring-2 ring-inset ring-[var(--trail)]" : ""
                   }`}
                 >
@@ -148,7 +148,7 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
                 }}
                 onMouseEnter={() => setHoveredSlug(stage.slug)}
                 onMouseLeave={() => setHoveredSlug(null)}
-                className={`relative flex min-h-[108px] cursor-pointer flex-col bg-white p-2 text-left transition-colors md:min-h-[120px] md:p-3 ${
+                className={`relative flex min-h-[140px] cursor-pointer flex-col bg-white p-2 text-left transition-colors md:min-h-[160px] md:p-3 ${
                   checked
                     ? "bg-[var(--trail-soft)] ring-2 ring-inset ring-[var(--trail)]"
                     : stage.has_station
@@ -168,19 +168,22 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
                     Voir
                   </Link>
                 </div>
-                <p className="mt-2 line-clamp-3 text-[11px] font-semibold leading-snug text-neutral-900 md:text-xs">
+                <p className="mt-2 line-clamp-2 text-xs font-semibold leading-snug text-neutral-900 md:text-sm">
                   {shortTitle(stage.title)}
                 </p>
-                <div className="mt-auto flex flex-wrap items-center gap-1 pt-2">
-                  <span className="text-[10px] text-neutral-500">{stage.km} km</span>
+                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0">
+                  <span className="text-[11px] text-neutral-500 md:text-xs">{stage.km} km</span>
+                  {stage.denivele != null && (
+                    <span className="text-[11px] text-neutral-500 md:text-xs">↑{stage.denivele} m</span>
+                  )}
+                </div>
+                <div className="mt-auto flex flex-wrap items-center gap-2 pt-2">
                   {stage.has_station && (
-                    <span className="border border-[var(--border)] bg-[var(--background-subtle)] px-1 font-[family-name:var(--font-display)] text-[7px] font-semibold uppercase tracking-[0.12em] text-neutral-600">
-                      Gare
-                    </span>
+                    <span className="text-2xl leading-none" title="Étape avec gare">🚉</span>
                   )}
                   {names.length > 0 && (
-                    <span className="border border-[var(--border)] bg-white px-1 font-[family-name:var(--font-display)] text-[7px] font-semibold uppercase tracking-[0.1em] text-neutral-600">
-                      {names.length}
+                    <span className="inline-flex items-center border border-[var(--trail)] px-1.5 py-0.5 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.14em] text-[var(--trail)]">
+                      {names.length} inscrit{names.length > 1 ? "s" : ""}
                     </span>
                   )}
                 </div>
@@ -191,7 +194,7 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
                     </p>
                     <ul className="space-y-1.5">
                       {names.map((n, j) => (
-                        <li key={j} className="text-sm font-medium text-neutral-900">{n}</li>
+                        <li key={j} className="text-sm font-medium text-[var(--trail)]">{n}</li>
                       ))}
                     </ul>
                   </div>

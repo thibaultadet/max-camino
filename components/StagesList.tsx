@@ -120,8 +120,11 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
                         </div>
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <span className="text-xs text-neutral-500">{stage.km} km</span>
+                          {stage.denivele != null && (
+                            <span className="text-xs text-neutral-500">↑ {stage.denivele} m</span>
+                          )}
                           {names.length > 0 && (
-                            <span className="inline-flex items-center border border-[var(--border)] bg-white px-2 py-0.5 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.14em] text-neutral-600">
+                            <span className="inline-flex items-center border border-[var(--trail)] px-2 py-0.5 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.14em] text-[var(--trail)]">
                               {names.length} inscrit{names.length > 1 ? "s" : ""}
                             </span>
                           )}
@@ -130,8 +133,8 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
 
                       {/* Gare */}
                       {showStation && (
-                        <span className="hidden shrink-0 whitespace-nowrap border border-[var(--border)] bg-[var(--background-subtle)] px-2.5 py-1 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.16em] text-neutral-600 sm:inline-block">
-                          Gare
+                        <span className="hidden shrink-0 text-xl leading-none sm:inline-block" title="Étape avec gare">
+                          🚉
                         </span>
                       )}
                     </div>
@@ -144,7 +147,7 @@ export default function StagesList({ stages, registrationsByStage }: Props) {
                         </p>
                         <ul className="space-y-1.5">
                           {names.map((n, i) => (
-                            <li key={`${stage.slug}-${i}`} className="text-sm font-medium text-neutral-900">{n}</li>
+                            <li key={`${stage.slug}-${i}`} className="text-sm font-medium text-[var(--trail)]">{n}</li>
                           ))}
                         </ul>
                       </div>
