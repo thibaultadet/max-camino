@@ -3,6 +3,7 @@ export type Stage = {
   title: string;
   date: string;
   km: number;
+  denivele?: number;
   lat: number;
   lng: number;
   komoot_embed_url: string;
@@ -75,7 +76,7 @@ function baseUrl(table: string) {
 export async function getStages(): Promise<Stage[]> {
   if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY) return [];
 
-  const fields = "fields[]=slug&fields[]=title&fields[]=date&fields[]=km&fields[]=lat&fields[]=lng&fields[]=komoot_embed_url&fields[]=has_station";
+  const fields = "fields[]=slug&fields[]=title&fields[]=date&fields[]=km&fields[]=denivele&fields[]=lat&fields[]=lng&fields[]=komoot_embed_url&fields[]=has_station";
   const records: Stage[] = [];
   let offset: string | undefined;
 

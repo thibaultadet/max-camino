@@ -2,12 +2,19 @@ import type { ReactNode } from "react";
 import ScrollToJoinButton from "@/components/ScrollToJoinButton";
 import WelcomeLogoLink from "@/components/WelcomeLogoLink";
 
+type RouteStats = {
+  stageCount: number;
+  totalKm: number;
+  totalDenivele: number | null;
+};
+
 type WelcomeMessageProps = {
   /** Contenu entre le texte d’accueil et les règles (ex. carrousel photos). */
   midSection?: ReactNode;
+  stats?: RouteStats;
 };
 
-export default function WelcomeMessage({ midSection }: WelcomeMessageProps) {
+export default function WelcomeMessage({ midSection, stats }: WelcomeMessageProps) {
   return (
     <section className="w-full" aria-labelledby="welcome-heading">
       {/* Logo + titre + premier bloc sur la même ligne (à partir de md) */}
@@ -22,6 +29,30 @@ export default function WelcomeMessage({ midSection }: WelcomeMessageProps) {
             >
               La voie du Mont Blanc
             </h1>
+            {stats && (
+              <dl className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+                <div className="flex flex-col">
+                  <dt className="text-xs font-medium uppercase tracking-widest text-neutral-400">Étapes</dt>
+                  <dd className="font-[family-name:var(--font-display)] text-2xl font-semibold text-neutral-900">
+                    {stats.stageCount}
+                  </dd>
+                </div>
+                <div className="flex flex-col">
+                  <dt className="text-xs font-medium uppercase tracking-widest text-neutral-400">Distance</dt>
+                  <dd className="font-[family-name:var(--font-display)] text-2xl font-semibold text-neutral-900">
+                    {stats.totalKm.toLocaleString("fr-FR")}&thinsp;km
+                  </dd>
+                </div>
+                {stats.totalDenivele !== null && (
+                  <div className="flex flex-col">
+                    <dt className="text-xs font-medium uppercase tracking-widest text-neutral-400">Dénivelé</dt>
+                    <dd className="font-[family-name:var(--font-display)] text-2xl font-semibold text-neutral-900">
+                      {stats.totalDenivele.toLocaleString("fr-FR")}&thinsp;m D+
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            )}
           </header>
 
           <div className="space-y-4 md:space-y-5">

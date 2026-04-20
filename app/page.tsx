@@ -15,9 +15,15 @@ export default async function Home() {
   ]);
   const publicPhotos = getPublicImagePaths();
 
+  const totalKm = Math.round(stages.reduce((sum, s) => sum + (s.km ?? 0), 0));
+  const deniveleValues = stages.map((s) => s.denivele).filter((v): v is number => v != null);
+  const totalDenivele = deniveleValues.length > 0 ? deniveleValues.reduce((a, b) => a + b, 0) : null;
+  const stats = { stageCount: stages.length, totalKm, totalDenivele };
+
   return (
     <main className="mx-auto w-full px-4 pb-20 pt-12 md:px-8 md:pt-16">
       <WelcomeMessage
+        stats={stats}
         midSection={
           <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] mt-10 w-screen max-w-[100vw] overflow-x-hidden md:mt-12">
             <PhotoCarousel imagePaths={publicPhotos} variant="hero" />
