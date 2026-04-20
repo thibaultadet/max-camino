@@ -162,6 +162,22 @@ export async function createRegistration(name: string, stageRecordId: string): P
   }
 }
 
+export async function createPrayerIntention(name: string, intention: string): Promise<void> {
+  if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY)
+    throw new Error("Airtable non configuré");
+
+  const res = await fetch(baseUrl("PrayerIntentions"), {
+    method: "POST",
+    headers: airtableHeaders(),
+    body: JSON.stringify({ fields: { name, intention } }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Erreur Airtable ${res.status}: ${body}`);
+  }
+}
+
 export async function upsertStages(stages: Stage[]): Promise<void> {
   if (!process.env.AIRTABLE_BASE_ID || !process.env.AIRTABLE_API_KEY)
     throw new Error("Airtable non configuré");

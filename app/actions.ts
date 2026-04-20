@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createRegistration, getStages } from "@/lib/airtable";
+import { createRegistration, createPrayerIntention, getStages } from "@/lib/airtable";
 
 export async function register(stages: string, name: string) {
   const trimmed = name.trim();
@@ -20,4 +20,14 @@ export async function register(stages: string, name: string) {
   );
   slugs.forEach((slug) => revalidatePath(`/stages/${slug}`));
   revalidatePath("/");
+}
+
+export async function submitPrayerIntention(name: string, intention: string) {
+  const trimmedName = name.trim();
+  const trimmedIntention = intention.trim();
+
+  if (!trimmedName || trimmedName.length < 2) throw new Error("Nom invalide");
+  if (!trimmedIntention || trimmedIntention.length < 5) throw new Error("Intention trop courte");
+
+  await createPrayerIntention(trimmedName, trimmedIntention);
 }

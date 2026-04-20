@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import ScrollToJoinButton from "@/components/ScrollToJoinButton";
 import WelcomeLogoLink from "@/components/WelcomeLogoLink";
+import PrayerIntentionForm from "@/components/PrayerIntentionForm";
 
 type RouteStats = {
   stageCount: number;
@@ -76,6 +77,10 @@ export default function WelcomeMessage({ midSection, stats }: WelcomeMessageProp
               C’est facile à utiliser, vous n’avez qu’à sélectionner les étapes où vous voulez me rejoindre,
               ajouter votre nom, et valider !
             </p>
+            <p>
+              Par ailleurs, si vous souhaitez me confier des intentions de prière pour ma route, n’hésitez
+              pas, il y a un bouton plus bas. J’aurais du temps pour prier pour vous !
+            </p>
           </div>
         </div>
       </div>
@@ -118,6 +123,8 @@ export default function WelcomeMessage({ midSection, stats }: WelcomeMessageProp
             C’est une aventure en autonomie : cela veut dire qu’on n’aura pas toujours de quoi se ravitailler ! Prévois bien cela niveau nourriture et eau !
           </li>
         </ul>
+
+        <PrayerIntentionForm />
 
         <ScrollToJoinButton />
       </div>
