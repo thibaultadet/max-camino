@@ -26,7 +26,7 @@ export default function ViewToggle({ stages, registrationsByStage }: Props) {
     () => false
   );
   const [userOverride, setUserOverride] = useState<"list" | "calendar" | null>(null);
-  const view = userOverride ?? (isWide ? "calendar" : "list");
+  const view = isWide ? (userOverride ?? "calendar") : "list";
 
   return (
     <div>
@@ -37,7 +37,7 @@ export default function ViewToggle({ stages, registrationsByStage }: Props) {
             : "Clique sur un jour pour voir le détail de l'étape."}
         </p>
         <div
-          className="inline-flex w-full shrink-0 gap-0 border border-[var(--border)] bg-[var(--background-subtle)] p-0 sm:w-auto"
+          className="hidden w-full shrink-0 gap-0 border border-[var(--border)] bg-[var(--background-subtle)] p-0 sm:w-auto md:inline-flex"
           role="tablist"
           aria-label="Affichage des étapes"
         >
@@ -59,7 +59,7 @@ export default function ViewToggle({ stages, registrationsByStage }: Props) {
             role="tab"
             aria-selected={view === "calendar"}
             onClick={() => setUserOverride("calendar")}
-            className={`flex-1 border-l border-[var(--border)] px-5 py-3 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors sm:flex-none sm:min-w-[8rem] ${
+            className={`hidden flex-1 border-l border-[var(--border)] px-5 py-3 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors md:block md:flex-none md:min-w-[8rem] ${
               view === "calendar"
                 ? "bg-[var(--foreground)] text-white"
                 : "text-neutral-500 hover:bg-white/60 hover:text-neutral-800"

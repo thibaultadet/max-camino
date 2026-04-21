@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useSyncExternalStore, useTransition } from "react";
 import Link from "next/link";
 import type { Stage } from "@/lib/airtable";
 import { shortTitle } from "@/lib/shortStageTitle";
@@ -10,6 +10,14 @@ type Props = {
   stages: Stage[];
   registrationsByStage: Record<string, string[]>;
 };
+
+const MD_MIN_WIDTH_PX = 768;
+
+function subscribeMq(onChange: () => void) {
+  const mq = window.matchMedia(`(min-width: ${MD_MIN_WIDTH_PX}px)`);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
 
 const DAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 const MONTHS = [
@@ -26,6 +34,11 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
   const [name, setName] = useState("");
   const [done, setDone] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const isDesktop = useSyncExternalStore(
+    subscribeMq,
+    () => window.matchMedia(`(min-width: ${MD_MIN_WIDTH_PX}px)`).matches,
+    () => false
+  );
 
   const stageByDate = Object.fromEntries(stages.map((s) => [s.date, s]));
 
@@ -62,6 +75,19 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
     } else setMonth((m) => m + 1);
   }
 
+  useEffect(() => {
+    if (isDesktop || hoveredSlug == null) return;
+
+    function handlePointerDown(event: PointerEvent) {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('[data-inscrits-interactive="true"]')) return;
+      setHoveredSlug(null);
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [hoveredSlug, isDesktop]);
+
   const firstDay = new Date(year, month, 1);
   const startOffset = (firstDay.getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -73,23 +99,23 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
 
   return (
     <>
-      <div className="p-6 md:p-8">
-        <div className="flex items-center justify-between gap-4 pb-6">
+      <div className="p-4 md:p-6">
+        <div className="flex items-center justify-between gap-3 pb-4">
           <button
             type="button"
             onClick={prevMonth}
-            className="flex items-center gap-2 border border-transparent px-2 py-2 font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-500 transition hover:border-[var(--border)] hover:bg-[var(--background-subtle)] hover:text-neutral-800"
+            className="flex items-center gap-2 border border-transparent px-2 py-2 font-[family-name:var(--font-display)] text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 transition hover:border-[var(--border)] hover:bg-[var(--background-subtle)] hover:text-neutral-800"
           >
             <span className="text-lg leading-none" aria-hidden>‹</span>
             <span className="hidden sm:inline">Précédent</span>
           </button>
-          <h2 className="text-center font-[family-name:var(--font-display)] text-xl font-semibold uppercase tracking-[0.12em] text-neutral-900 md:text-2xl">
+          <h2 className="text-center font-[family-name:var(--font-display)] text-2xl font-semibold uppercase tracking-[0.12em] text-neutral-900 md:text-3xl">
             {MONTHS[month]} <span className="font-normal text-neutral-500">{year}</span>
           </h2>
           <button
             type="button"
             onClick={nextMonth}
-            className="flex items-center gap-2 border border-transparent px-2 py-2 font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-500 transition hover:border-[var(--border)] hover:bg-[var(--background-subtle)] hover:text-neutral-800"
+            className="flex items-center gap-2 border border-transparent px-2 py-2 font-[family-name:var(--font-display)] text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 transition hover:border-[var(--border)] hover:bg-[var(--background-subtle)] hover:text-neutral-800"
           >
             <span className="hidden sm:inline">Suivant</span>
             <span className="text-lg leading-none" aria-hidden>›</span>
@@ -100,7 +126,7 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
           {DAYS.map((d) => (
             <div
               key={d}
-              className="bg-[var(--foreground)] px-1 py-3.5 text-center font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.28em] text-white"
+              className="bg-[var(--foreground)] px-1 py-2.5 text-center font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.28em] text-white"
             >
               {d}
             </div>
@@ -108,7 +134,7 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
           {cells.map((day, i) => {
             if (!day) {
               return (
-                <div key={i} className="min-h-[140px] bg-[var(--background-subtle)]/60 md:min-h-[160px]" />
+                <div key={i} className="min-h-[116px] bg-[var(--background-subtle)]/60 md:min-h-[132px]" />
               );
             }
 
@@ -123,11 +149,11 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
               return (
                 <div
                   key={i}
-                  className={`relative flex min-h-[140px] flex-col bg-white p-2 md:min-h-[160px] md:p-3 ${
+                  className={`relative flex min-h-[116px] flex-col bg-white p-1.5 md:min-h-[132px] md:p-2 ${
                     isToday ? "ring-2 ring-inset ring-[var(--trail)]" : ""
                   }`}
                 >
-                  <span className="font-[family-name:var(--font-display)] text-sm font-medium tabular-nums text-neutral-300">
+                  <span className="font-[family-name:var(--font-display)] text-base font-medium tabular-nums text-neutral-300">
                     {day}
                   </span>
                 </div>
@@ -148,9 +174,13 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
                     toggle(stage.slug);
                   }
                 }}
-                onMouseEnter={() => setHoveredSlug(stage.slug)}
-                onMouseLeave={() => setHoveredSlug(null)}
-                className={`relative flex min-h-[140px] flex-col bg-white p-2 text-left transition-colors md:min-h-[160px] md:p-3 ${
+                onMouseEnter={() => {
+                  if (isDesktop) setHoveredSlug(stage.slug);
+                }}
+                onMouseLeave={() => {
+                  if (isDesktop) setHoveredSlug(null);
+                }}
+                className={`relative flex min-h-[116px] flex-col bg-white p-1.5 text-left transition-colors md:min-h-[132px] md:p-2 ${
                   closed
                     ? "cursor-not-allowed opacity-60"
                     : checked
@@ -161,48 +191,81 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
                 } ${isToday && !checked ? "ring-2 ring-inset ring-neutral-900/20" : ""}`}
               >
                 <div className="flex items-start justify-between gap-1">
-                  <span className="font-[family-name:var(--font-display)] text-sm font-semibold tabular-nums text-neutral-900">
+                  <span className="font-[family-name:var(--font-display)] text-base font-semibold tabular-nums text-neutral-900">
                     {day}
                   </span>
                   <Link
                     href={`/stages/${stage.slug}`}
                     onClick={(e) => e.stopPropagation()}
-                    className="shrink-0 font-[family-name:var(--font-display)] text-[8px] font-semibold uppercase tracking-[0.16em] text-[var(--trail)] underline-offset-2 hover:underline"
+                    className="shrink-0 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.16em] text-[var(--trail)] underline-offset-2 hover:underline"
                   >
-                    Voir
+                    + d'infos
                   </Link>
                 </div>
-                <p className="mt-2 line-clamp-2 text-xs font-semibold leading-snug text-neutral-900 md:text-sm">
+                <p className="mt-1 line-clamp-2 text-sm font-semibold leading-snug text-neutral-900 md:text-base">
                   {shortTitle(stage.title)}
                 </p>
                 <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0">
-                  <span className="text-[11px] text-neutral-500 md:text-xs">{stage.km} km</span>
+                  <span className="text-xs text-neutral-500 md:text-sm">{stage.km} km</span>
                   {stage.denivele != null && (
-                    <span className="text-[11px] text-neutral-500 md:text-xs">↑{stage.denivele} m</span>
+                    <span className="text-xs text-neutral-500 md:text-sm">↑{stage.denivele} m</span>
                   )}
                 </div>
-                <div className="mt-auto flex flex-wrap items-center gap-2 pt-2">
+                <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
                   {stage.has_station && (
                     <span className="text-2xl leading-none" title="Étape avec gare">🚉</span>
                   )}
                   {closed ? (
-                    <span className="inline-flex items-center border border-neutral-400 px-1.5 py-0.5 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
+                    <span className="inline-flex items-center border border-neutral-400 px-1.5 py-0.5 font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
                       Complet
                     </span>
                   ) : names.length > 0 && (
-                    <span className="inline-flex items-center border border-[var(--trail)] px-1.5 py-0.5 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.14em] text-[var(--trail)]">
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      data-inscrits-interactive="true"
+                      onClick={(e) => {
+                        if (isDesktop) return;
+                        e.stopPropagation();
+                        setHoveredSlug((prev) => (prev === stage.slug ? null : stage.slug));
+                      }}
+                      onKeyDown={(e) => {
+                        if (isDesktop) return;
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setHoveredSlug((prev) => (prev === stage.slug ? null : stage.slug));
+                        }
+                      }}
+                      className="inline-flex items-center border border-[var(--trail)] px-1.5 py-0.5 font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--trail)]"
+                    >
                       {names.length} inscrit{names.length > 1 ? "s" : ""}
                     </span>
                   )}
                 </div>
                 {names.length > 0 && hoveredSlug === stage.slug && (
-                  <div className="absolute left-0 top-full z-10 mt-1 min-w-[160px] border border-[var(--border)] bg-white px-4 py-3 shadow-lg">
-                    <p className="mb-2 font-[family-name:var(--font-display)] text-[9px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
+                  <div
+                    data-inscrits-interactive="true"
+                    className="absolute left-0 top-full z-10 mt-0.5 min-w-[160px] border border-[var(--border)] bg-white px-4 py-3 shadow-lg"
+                  >
+                    <button
+                      type="button"
+                      aria-label="Fermer la liste des inscrits"
+                      data-inscrits-interactive="true"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setHoveredSlug(null);
+                      }}
+                      className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center text-sm text-neutral-400 transition hover:text-neutral-800 md:hidden"
+                    >
+                      ✕
+                    </button>
+                    <p className="mb-2 font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
                       Inscrits
                     </p>
                     <ul className="space-y-1.5">
                       {names.map((n, j) => (
-                        <li key={j} className="text-sm font-medium text-[var(--trail)]">{n}</li>
+                        <li key={j} className="text-base font-medium text-[var(--trail)]">{n}</li>
                       ))}
                     </ul>
                   </div>
@@ -225,19 +288,19 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
               ✕
             </button>
             {done ? (
-              <p className="py-1 text-center text-sm font-medium text-neutral-900">
+              <p className="py-1 text-center text-base font-medium text-neutral-900">
                 Parfait, on se voit sur les chemins ! 🎉
               </p>
             ) : (
               <>
-                <p className="mb-4 font-[family-name:var(--font-display)] text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-500">
+                <p className="mb-4 font-[family-name:var(--font-display)] text-xs font-semibold uppercase tracking-[0.22em] text-neutral-500">
                   Inscription
                 </p>
-                <p className="mb-4 text-base font-semibold text-neutral-900">
+                <p className="mb-4 text-lg font-semibold text-neutral-900">
                   {selected.size} étape{selected.size > 1 ? "s" : ""} sélectionnée{selected.size > 1 ? "s" : ""}
                 </p>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                  <label htmlFor="name-cal" className="text-xs font-medium uppercase tracking-wide text-neutral-600">
+                  <label htmlFor="name-cal" className="text-sm font-medium uppercase tracking-wide text-neutral-600">
                     Prénom et nom
                   </label>
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
@@ -249,12 +312,12 @@ export default function StagesCalendar({ stages, registrationsByStage }: Props) 
                       onChange={(e) => setName(e.target.value)}
                       required
                       minLength={2}
-                      className="min-h-[48px] flex-1 border border-[var(--border)] bg-[var(--background-subtle)] px-4 py-3 text-base text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                      className="min-h-[48px] flex-1 border border-[var(--border)] bg-[var(--background-subtle)] px-4 py-3 text-lg text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-neutral-900"
                     />
                     <button
                       type="submit"
                       disabled={isPending}
-                      className="min-h-[48px] shrink-0 border border-[var(--foreground)] bg-[var(--foreground)] px-8 py-3 font-[family-name:var(--font-display)] text-[11px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-neutral-800 disabled:opacity-50"
+                      className="min-h-[48px] shrink-0 border border-[var(--foreground)] bg-[var(--foreground)] px-8 py-3 font-[family-name:var(--font-display)] text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-neutral-800 disabled:opacity-50"
                     >
                       {isPending ? "…" : "Je viens !"}
                     </button>
